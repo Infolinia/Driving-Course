@@ -1,0 +1,11 @@
+<hr/>
+<h3>Rezerwacja anulowana</h3>
+Rezerwacja: {{ datetime |  date("Y/m/d") }}<br/>
+Godzina: {{ datetime |  date("H:i") }}<br/>
+Kategoria: {{ category }}<br/>
+Kursant: {{ participant.getDetails().getFirstName() }} {{ participant.getDetails().getLastName() }}<br/>
+Została anulowana.
+<br/>
+<br/><br/>
+Pozdrawiamy
+<hr/>

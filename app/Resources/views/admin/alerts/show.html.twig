@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h3>Informacje dla adminisratora</h3>
+    <hr/>
+    {% set empty = true %}
+    {% if instructors is defined %}
+        <div class="row">
+            <div class="mx-auto col-md-6 pt-3  mb-4">
+                {% for instructor in instructors %}
+                    {% if instructor.getInstructorCategory is empty %}
+                        <div class="alert alert-warning" role="alert">
+                            <strong>Ostrzeżenie!</strong> Instruktor "{{ instructor.getDetails.getFirstName }} {{ instructor.getDetails.getLastName }}" nie ma przydzielonej kategorii nauki jazdy. <a href="{{ url('profile_edit', {'id': instructor.id}) }}" class="btn btn-warning rounded-0 btn-sm">Przydziel</a><br/>
+                        </div>
+                        {% set empty = false %}
+                    {% endif %}
+                {% endfor %}
+
+                {% for course in courses %}
+                    {% if course.getInstructorCourse is empty %}
+                        <div class="alert alert-warning" role="alert">
+                            <strong>Ostrzeżenie!</strong>  Kurs "{{course.getDescription }}" nie ma przydzielonego instruktora. <a href="{{ url('course_show', {'course': course.id}) }}" class="btn btn-warning rounded-0 btn-sm">Przydziel</a><br/>
+                        </div>
+                        {% set empty = false %}
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    {% if empty == true %}
+        <div class="alert alert-warning" role="alert">
+            <strong>Ostrzeżenie! </strong>Brak komunikatów do wyświetlenia.<br/>
+        </div>
+    {% endif %}
+
+{% endblock %}
+
+
+
+

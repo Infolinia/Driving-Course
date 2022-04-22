@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h3>Dodawanie kategorii</h3>
+    <hr/>
+    {% include('course/alert.html.twig') %}
+
+    <div class="row">
+        <div class="mx-auto col-md-6 pt-3  mb-4">
+            <div class="card">
+                <div class="card-header text-center text-muted">
+                   Dodawanie kategorii prawa jazdy
+                </div>
+                <div class="card-body bg-light">
+                    {{ form_start(form) }}
+                    <div class="form-group">
+                        {{ form_row(form.type, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Nazwa kategorii'}} ) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(form.description, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Opis'}} ) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(form.submit, {'label': 'Dodaj', 'attr': { 'class' : 'btn btn-block btn-primary rounded-0 btn-sm'}} ) }}
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="mx-auto col-md-6 pt-3  mb-4">
+            <div class="card">
+                <div class="card-header text-center text-muted">
+                    Lista wszysktich kategorii
+                </div>
+                <div class="card-body bg-light">
+                    {% for category in categories %}
+                        <div class="font-weight-normal text-muted text-center"> {{ category.type }}
+                            <a class="btn btn-primary rounded-0 btn-sm" href="{{ url('category_edit', {'id': category.id}) }}">Edytuj</a>
+                        </div>
+                        <hr class="mt-1"/>
+                        <div class="form-group text-center">
+                            {{ category.description }}
+                        </div>
+                        <hr class="mt-1"/> <hr class="mt-1"/>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

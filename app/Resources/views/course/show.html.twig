@@ -1,0 +1,152 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h3>Szczególowe informacje</h3>
+    <hr>
+    {% include('course/alert.html.twig') %}
+    <div class="row">
+        <div class="mx-auto col-md-6 pt-3  mb-4">
+            <div class="card">
+                <div class="card-header text-center text-muted">
+                    Kategoria {{ course.getCategory.getCategory.type }}
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a href="{{ url('course_edit', {'course': course.id}) }}" class="btn btn-primary rounded-0 btn-sm">Edytuj</a>
+                    {% endif %}
+                </div>
+                <div class="card-body bg-light">
+                    <div class="font-weight-normal text-muted">Podstawowe informacje</div>
+                    <hr/>
+                    <div class="form-group row">
+                        <label for="street" class="col-md-4 col-form-label">Data rozpoczęcia</label>
+                        <div class="col-md-8">
+                            {{ course.getStartTime | date("Y/m/d") }}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="city" class="col-md-4 col-form-label">Data zakończenia</label>
+                        <div class="col-md-8">
+                            {{ course.getFinishTime | date("Y/m/d") }}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label">Liczba miejsc</label>
+                        <div class="col-md-8">
+                            {% if course.getMaxParticipants - count < 0%}
+                              0
+                                {% else %}
+                            {{course.getMaxParticipants - count}}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label">Koszt</label>
+                        <div class="col-md-8">
+                            {{ course.price }} zł
+                        </div>
+                    </div>
+                    {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                        {% if paid == false %}
+                            {% if course.getMaxParticipants - count > 0%}
+                            <div class="form-group">
+                                {{ form_start(form) }}
+                                {% if form.instructors is defined and is_granted('ROLE_ADMIN')%}
+                                    <div class="font-weight-normal text-muted">Przydzielanie instruktora</div>
+                                    <hr/>
+                                    <div class="form-group row">
+                                        <label for="role" class="col-md-4 col-form-label">Instruktor</label>
+                                        <div class="col-md-8">
+                                            {{ form_row(form.instructors, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0'}} ) }}
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        {{ form_row(form.submit, {'label': 'Dodaj', 'attr': { 'class' : 'btn btn-block btn-primary rounded-0 btn-sm'}} ) }}
+                                    </div>
+                                {% endif %}
+                                {% if form.instructorSelect is defined %}
+                                        <div class="form-group row">
+                                            <label for="role" class="col-md-4 col-form-label">Numer PKK</label>
+                                            <div class="col-md-8">
+                                                {{ form_row(form.pkk, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0'}} ) }}
+                                            </div>
+                                        </div>
+                                    <div class="form-group row">
+                                        <label for="role" class="col-md-4 col-form-label">Instruktor</label>
+                                        <div class="col-md-8">
+                                        {{ form_row(form.instructorSelect, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0'}} ) }}
+                                        </div>
+                                    </div>
+                                    {% for i in 0..(form.instructorSelect.vars.choices | length-1) %}
+                                        {% if form.instructorSelect.vars.choices | length > 0 %}
+                                            <div class="form-group row">
+                                                    <div class="collapse col-md-12" id="collapse{{ form.instructorSelect.vars.choices[i].value }}">
+                                                        <div class="card card-body">
+                                                           Informacje o instruktorze o id: {{ form.instructorSelect.vars.choices[i].value }} , {{ form.instructorSelect.vars.choices[i].label }}
+                                                           <br/><br/>
+                                                            <div class="text-center text-muted">
+                                                                <a class="btn btn-primary" href="{{ url('instructor_show', {'id':form.instructorSelect.vars.choices[i].value })}}">Więcej</a>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                            </div>
+                                        {% endif %}
+                                     {% endfor %}
+                                    <div class="form-group">
+                                        {{ form_row(form.submit, {'label': 'Zapłać', 'attr': { 'class' : 'btn btn-block btn-primary rounded-0 btn-sm'}} ) }}
+                                    </div>
+                                {% endif %}
+                                {{ form_end(form) }}
+                            {%  else %}
+                                <div class="form-group row">
+                                    <label for="role" class="col-md-4 col-form-label">Status</label>
+                                    <div class="col-md-8" style="color:red; font-weight:bold">
+                                        Brak miejsc
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {%  else %}
+                            <div class="form-group row">
+                                <label for="role" class="col-md-4 col-form-label">Status</label>
+                                <div class="col-md-8" style="color:green; font-weight:bold">
+                                    Opłacono
+                                </div>
+                            </div>
+                        {% endif %}
+                            </div>
+                    {% else %}
+                        <div class="form-group">
+                            {% if course.getMaxParticipants - count > 0%}
+                            <a class="btn btn-block btn-primary rounded-0 btn-sm" href="{{ url('security_login') }}">Zaloguj</a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <div class="form-group row">
+                            <label for="role" class="col-md-4 col-form-label">Instruktorzy</label>
+                            <div class="col-md-8">
+                                {% for c in course.getInstructorCourse %}
+                                    <form action="{{ url('instructor_remove', {'course': c.getCourse.getId, 'instructor':  c.getUser.getId}) }}">
+                                        <div class="form-group row">
+                                            <div  class="col-md-2"></div>
+                                            <div  class="col-md-7">
+                                                <input class="form-control form-control-sm text-center rounded-0" type="text" value="{{ c.getUser.getDetails.getFirstName }} {{ c.getUser.getDetails.getLastName }}" readonly>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <button class="btn btn-primary rounded-0 btn-sm">Usuń</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                {% else %}
+                                    ---
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+
+
+

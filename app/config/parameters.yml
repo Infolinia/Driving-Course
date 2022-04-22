@@ -1,0 +1,15 @@
+parameters:
+    database_host: 127.0.0.1
+    database_port: 3306
+    database_name: driving_course
+    database_user: root
+    database_password: pBpK63wQY5
+    mailer_transport: gmail
+    mailer_host: 127.0.0.1
+    mailer_user: driving.course002@gmail.com
+    mailer_name: Nauka Jazdy
+    mailer_password: hd6gst3fsr
+    secret: b109875ba07dfa907679fddc675bd6dfa9f3672d
+    globals:
+        roles: [ROLE_ADMIN,ROLE_INSTRUCTOR, ROLE_PARTICIPANT]
+    photos_directory: '%kernel.project_dir%/web/photos'

@@ -1,0 +1,88 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <hr/>
+    {% include('course/alert.html.twig') %}
+    <div class="row">
+        <div class="mx-auto col-md-6 pt-3  mb-4">
+            <div class="card">
+                <div class="card-header text-center text-muted">
+                    Wyszukiwanie użytkowników
+                </div>
+                <div class="card-body bg-light">
+                    {{ form_start(form) }}
+                    <div class="form-group">
+                        {{ form_row(form.search, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Nazwisko'}} ) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(form.submit, {'label': 'Wyszukaj', 'attr': { 'class' : 'btn btn-block btn-primary rounded-0 btn-sm'}} ) }}
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if details is defined %}
+        <div class="row">
+            {% for detail in details %}
+                <div class="mx-auto col-md-6 pt-3  mb-4">
+                    <div class="card">
+                        <div class="card-header text-center text-muted">
+                            {{ detail.firstName }} {{ detail.lastName }}
+                        </div>
+                        <div class="card-body bg-light">
+                            <div class="font-weight-normal text-muted">Dane użytkownika</div>
+                            <hr/>
+                            <div class="form-group row">
+                                <label for="street" class="col-md-4 col-form-label">Ulica</label>
+                                <div class="col-md-8">
+                                    {{ detail.street }}
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="city" class="col-md-4 col-form-label">Miasto</label>
+                                <div class="col-md-8">
+                                    {{ detail.city }}
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="name" class="col-md-4 col-form-label">Kod pocztowy</label>
+                                <div class="col-md-8">
+                                    {{ detail.postCode }}
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="phone_number" class="col-md-4 col-form-label">Numer telefonu</label>
+                                <div class="col-md-8">
+                                    {{ detail.phoneNumber }}
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="email" class="col-md-4 col-form-label">Email</label>
+                                <div class="col-md-8">
+                                    {{ detail.email }}
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="email" class="col-md-4 col-form-label">Rola</label>
+                                <div class="col-md-8">
+                                    {{ detail.owner.getRoles|join(", ") }}
+                                </div>
+                            </div>
+                            <form action="{{ url('profile_edit', {'id': detail.owner.id}) }}" method="POST">
+                                <div class="form-group">
+                                    <button class="btn btn-block btn-primary rounded-0 btn-sm">Wybierz</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}
+
+
+
+

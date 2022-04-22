@@ -1,0 +1,91 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h3>Lista kursów</h3>
+    <hr>
+    <div class="row">
+        {% include('course/alert.html.twig') %}
+        {% for course in courses %}
+            <div class="modal fade" id="exampleModal{{ course.getId() }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            Czy napewno chcesz zakończyć kurs?
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Nie</button>
+                            <a class="btn btn-primary" href="{{ url('course_finish', {'id': course.id}) }}">Tak</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mx-auto col-md-6 pt-3  mb-4">
+                <div class="card">
+                    <div class="card-header text-center text-muted">
+                        Kategoria {{ course.getCategory.getCategory.type }}
+                        {% if is_granted('ROLE_ADMIN') and course.getMaxParticipants - (array[course.id]|join(", ") ) > 0 and  course.getEnabled() == 1%}
+                            <a style="color:white" data-toggle="modal" data-target="#exampleModal{{ course.getId() }}" class="btn btn-primary rounded-0 btn-sm">Zakończ</a>
+                        {% endif %}
+                    </div>
+                    <div class="card-body bg-light">
+                        <div class="font-weight-normal text-muted">Podstawowe informacje</div>
+                        <hr/>
+                        <div class="form-group row">
+                            <label for="street" class="col-md-4 col-form-label">Data rozpoczęcia</label>
+                            <div class="col-md-8">
+                                {{ course.getStartTime | date("Y/m/d") }}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="city" class="col-md-4 col-form-label">Data zakończenia</label>
+                            <div class="col-md-8">
+                                {{ course.getFinishTime | date("Y/m/d") }}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="city" class="col-md-4 col-form-label">Opis</label>
+                            <div class="col-md-8">
+                                {{ course.getDescription }}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="name" class="col-md-4 col-form-label">Wolne miejsca</label>
+                            <div class="col-md-8">
+                                {% if course.getMaxParticipants - (array[course.id]|join(", ") ) < 0%}
+                                    0
+                                {% else %}
+                                    {{course.getMaxParticipants - (array[course.id]|join(", ") )}}
+                                {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="city" class="col-md-4 col-form-label">Cena</label>
+                        <div class="col-md-8">
+                            {{ course.getPrice() }} zł
+                        </div>
+                    </div>
+                        <form action="{{ url('course_show', {'course': course.id}) }}" method="POST">
+                            <div class="form-group">
+                                {% if course.getMaxParticipants - (array[course.id]|join(", ") ) > 0 and  course.getEnabled() == 1%}
+                                     <button class="btn btn-block btn-primary rounded-0 btn-sm">Wybierz</button>
+                                {% else %}
+                                    <div class="form-group row">
+                                        <label for="city" class="col-md-4 col-form-label">Status</label>
+                                        <div class="col-md-8">
+                                            Zakończony
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-block btn-primary rounded-0 btn-sm" disabled>Wybierz</button>
+                            {% endif %}
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-md-12 alert alert-warning" role="alert">
+                Aktualnie nie ma żadnego aktywnego kursu.<br/>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

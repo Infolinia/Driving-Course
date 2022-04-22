@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}Szkoła nauki jazdy{% endblock %}</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        {% block stylesheets %}
+            <link rel="stylesheet" href="{{ asset("bootstrap/css/bootstrap.min.css") }}"/>
+            <link rel="stylesheet" href="{{ asset("bootstrap/css/style.css") }}"/>
+        {% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    </head>
+
+    <body>
+        <div class="jumbotron jumbotron-fluid mb-0">
+            <div class="container">
+                <h1>System zarządzania szkołą nauki jazdy</h1>
+                <p>Strona poświęcona kursantom chcącycm dokonywać rejestracji terminów jazd szkoleniowych przez intermet.</p>
+            </div>
+        </div>
+
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+            <button class="navbar-toggler ml-auto" type="button" data-toggle="collapse" data-target="#navbarContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav mx-auto">
+                    {% if is_granted('ROLE_PARTICIPANT') %}
+                        {% include('participant/menu.html.twig') %}
+                    {% elseif is_granted('ROLE_INSTRUCTOR')  %}
+                        {% include('instructor/menu.html.twig') %}
+                    {% elseif is_granted('ROLE_ADMIN')  %}
+                        {% include('admin/menu.html.twig') %}
+                    {% else %}
+                        {% include('course/menu.html.twig') %}
+                    {% endif %}
+                </ul>
+            </div>
+        </nav>
+
+        <div class="container mt-4">
+            {% block body %}{% endblock %}
+        </div>
+        <hr/>
+
+        <div class="container">
+            <p class="text-center">Copyrights © 2020. Wszelkie prawa zastrzeżone.</p>
+        </div>
+
+        {% block javascripts %}
+            <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+            <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+            <script>
+                var list = new Array();
+                $('#instructor_course_instructorSelect').on('change', function () {
+                    var e = document.getElementById("instructor_course_instructorSelect").value;
+                    function isInArray(value, array) {
+                        return array.indexOf(value) > -1;
+                    }
+                    if(!isInArray(e, list)){
+                        list.push(e);
+                    }
+                    for (var i = 0; i < list.length; i++) {
+                        $('#collapse'+ list[i]).collapse('hide');
+                    }
+                    $('#collapse'+ e).collapse('show');
+                });
+        </script>
+        {% endblock %}
+    </body>
+</html>

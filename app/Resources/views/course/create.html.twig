@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h3>Utwórz kurs</h3>
+    <hr/>
+    {% include('course/alert.html.twig') %}
+    <div class="row">
+        <div class="mx-auto col-md-6 pt-3  mb-4">
+            <div class="card">
+                <div class="card-header text-center text-muted">
+                   Dodawanie nowego kursu na prawo jazdy
+                </div>
+                <div class="card-body bg-light">
+                    {{ form_start(form) }}
+                    <div class="form-group">
+                        {{ form_row(form.description, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Opis'}} ) }}
+                    </div>
+                    <div class="form-group row">
+                        <label for="role" class="col-md-4 col-form-label">Data zakończenia</label>
+                        <div class="col-md-8">
+                        {{ form_row(form.finish_time, {'attr': { 'class' : 'text-center form-control'}} ) }}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="role" class="col-md-4 col-form-label">Kalegoria</label>
+                        <div class="col-md-8">
+                            {{ form_row(form.categories, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0'}} ) }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(form.price, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Cena'}} ) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(form.maxParticipants, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Malsymalna ilość uczestników'}} ) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(form.hours, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Ilość godzin'}} ) }}
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(form.submit, {'label': 'Dodaj', 'attr': { 'class' : 'btn btn-block btn-primary rounded-0 btn-sm'}} ) }}
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

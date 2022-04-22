@@ -1,0 +1,10 @@
+<hr/>
+<h3>Nowa rezerwacja</h3>
+Udało się utworzyć rezerwację na: {{ datetime |  date("Y/m/d") }}<br/>
+Godzina: {{ datetime |  date("H:i") }}<br/>
+Kategoria: {{ category }}<br/>
+Kursant: {{ participant.getDetails().getFirstName() }} {{ participant.getDetails().getLastName() }}
+<br/>
+<br/><br/>
+Pozdrawiamy
+<hr/>

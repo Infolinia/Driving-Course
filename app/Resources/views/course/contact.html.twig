@@ -1,0 +1,60 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h3>Formularz kontaktowy</h3>
+    <hr>
+    {% include('course/alert.html.twig') %}
+    <div class="row">
+        <div class="mx-auto col-md-6 pt-3  mb-4">
+            <div class="card">
+                <div class="card-header text-center text-muted">
+                    Formularz kontaktowy
+                </div>
+                <div class="card-body bg-light">
+                    {{ form_start(form) }}
+                    <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label">Imię i nazwisko</label>
+                        <div class="col-md-8">
+                            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                                {{ form_row(form.name, {'attr': { 'disabled': 'disabled', 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Imię', 'value': app.user.details.firstName ~" "~ app.user.details.lastName}} ) }}
+
+                            {% else %}
+                                {{ form_row(form.name, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Imię'}} ) }}
+
+                            {% endif %}
+
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label">Email</label>
+                        <div class="col-md-8">
+                            {% if is_granted('IS_AUTHENTICATED_FULLY') %}
+                                {{ form_row(form.email, {'attr': { 'disabled': 'disabled', 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Email', 'value': app.user.details.email}} ) }}
+                            {% else %}
+                            {{ form_row(form.email, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Email'}} ) }}
+
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label">Temat</label>
+                        <div class="col-md-8">
+                            {{ form_row(form.subject, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Temat'}} ) }}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label">Wiadomość</label>
+                        <div class="col-md-8">
+                            {{ form_row(form.message, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Wiadomość'}} ) }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(form.submit, {'label': 'Wyślij', 'attr': { 'class' : 'btn btn-block btn-primary rounded-0 btn-sm'}} ) }}
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

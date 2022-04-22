@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h3>Moje najbliższe jazdy</h3>
+    <hr/>
+    {% include('course/alert.html.twig') %}
+    </br>
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Data</th>
+            <th scope="col">Godzina</th>
+            <th scope="col">Kategoria</th>
+            <th scope="col">Kursant</th>
+            <th scope="col">---</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for ride in rides %}
+            <div class="modal fade" id="exampleModall{{ ride.getDateTime()| date('Y-m-d-H-i') }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            Czy napewno chcesz anulować jazdę?</br>
+                            Data: {{ride.getDateTime()  | date('d-m-Y') }} <br/>
+                            Godzina:  {{ ride.getDateTime()|date('H:i') }}<br/>
+                            Kursant:  {{ ride.getParticipant().getDetails().getFirstName()}} {{ ride.getParticipant().getDetails().getLastName()}}<br/>
+                            Kategoria: {{ ride.getCategory().getType()}}<br/>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Nie</button>
+                            <a class="btn btn-primary" href="{{ path('ride_instructor_cancel', { "id":  ride.getParticipant().getId(),'category': ride.getCategory().getId(), 'day': ride.getDateTime() | date('d-m-Y'), 'hour': ride.getDateTime() | date('H:i')})}}">Tak</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="exampleModall2{{ ride.getDateTime()| date('Y-m-d-H-i') }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-body">
+                            Czy napewno chcesz cofnąć odwołanie jazdy?</br>
+                            Data: {{ride.getDateTime()  | date('d-m-Y') }} <br/>
+                            Godzina:  {{ ride.getDateTime()|date('H:i') }}<br/>
+                            Kursant:  {{ ride.getParticipant().getDetails().getFirstName()}} {{ ride.getParticipant().getDetails().getLastName()}}<br/>
+                            Kategoria: {{ ride.getCategory().getType()}}<br/>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Nie</button>
+                            <a class="btn btn-primary" href="{{ path('ride_cancel_cancellation', {'category': ride.getCategory().getId(), 'day': ride.getDateTime() | date('d-m-Y'), 'hour': ride.getDateTime() | date('H:i')})}}">Tak</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <tr>
+                <td scope="row">{{ loop.index }}. </td>
+                <td>{{ ride.getDateTime() | date("m/d/Y")}}</td>
+                <td>{{ ride.getDateTime() | date("H:i")}}</td>
+                <td>{{ ride.getCategory().getType()}}</td>
+                <td>{{ ride.getParticipant().getDetails().getFirstName()}} {{ ride.getParticipant().getDetails().getLastName()}}</td>
+                {% if ride.getStatus() == 'busy' %}
+                <td><a style="color:white" data-toggle="modal" data-target="#exampleModall{{ride.getDateTime()  | date('Y-m-d-H-i') }}" class="btn btn-danger"> Odwołaj! </a></td>
+
+                {% elseif ride.getStatus() == 'canceled' %}
+                    <td><a style="color:white" data-toggle="modal" data-target="#exampleModall2{{ride.getDateTime()  | date('Y-m-d-H-i') }}" class="btn btn-success"> Cofnij odwołanie! </a></td>
+                {% else %}
+                    <td>---</td>
+                {% endif %}
+            </tr>
+        {% else %}
+            <div class="col-md-12 alert alert-warning" role="alert">
+                Aktualnie nie ma żadnej jazdy szkoleniowej.<br/>
+            </div>
+        {% endfor %}
+        </tbody>
+    </table>
+    </br>
+{% endblock %}
+

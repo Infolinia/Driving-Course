@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h3>Informacje o instruktorze </h3>
+    <hr>
+    {% include('course/alert.html.twig') %}
+    <div class="row">
+        <div class="mx-auto col-md-6 pt-3  mb-4">
+            <div class="card">
+                <div class="card-header text-center text-muted">
+                    Profil użytkownika
+                </div>
+                <div class="card-body bg-light">
+                        <div class="font-weight-normal text-muted">Awatar</div>
+                        <hr/>
+                        <div class="form-group row">
+                            {% if (user.photo is not null) %}
+                                <div  class="col-md-4"> <img src="{{ asset('photos/' ~ user.photo.getImage) }}" width="150" height="150"/></div>
+                            {% else %}
+                                <div  class="col-md-4"> <img src="{{ asset('photos/default.png') }}" width="150" height="150"/></div>
+                            {% endif %}
+                        </div>
+                    <div class="font-weight-normal text-muted">Dane osobowe</div>
+                    <hr/>
+                    <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label">Imię</label>
+                        <div class="col-md-8">
+                            {{ user.details.getFirstName() }}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label">Nazwisko</label>
+                        <div class="col-md-8">
+                            {{ user.details.getLastName() }}
+                        </div>
+                    </div>
+                    {% if is_granted('ROLE_ADMIN') %}
+                    <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label">Ulica</label>
+                        <div class="col-md-8">
+                            {{ user.details.getStreet() }}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label">Miasto</label>
+                        <div class="col-md-8">
+                            {{ user.details.getCity() }}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label">Numer telefonu</label>
+                        <div class="col-md-8">
+                            {{ user.details.getPhoneNumber() }}
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label">Email</label>
+                        <div class="col-md-8">
+                            {{ user.details.getEmail() }}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="role" class="col-md-4 col-form-label">Kategorie</label>
+                        <div class="col-md-8">
+                            {% for c in user.getInstructorCategory if  c.category.type %}
+                                {{ loop.index > 1 ? ', ': ''}}{{  c.category.type }}
+                            {% else %}
+                                ---
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label">Opinie</label>
+                        {% for o in opinions %}
+                            <div class="col-md-12 alert alert-info" role="alert">
+                                <b>{{o.getTitle() }}</b> - {{o.getDescription() }}
+                            </div>
+                        {% else %}
+                            <div class="col-md-12 alert alert-warning" role="alert">
+                                Ten instruktor nie ma jeszcze żadnej opinii.
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

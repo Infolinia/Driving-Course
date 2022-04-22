@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <h3>Aktualności</h3>
+    <hr>
+    <br/>
+    {% include('course/alert.html.twig') %}
+        <div class="card-body">
+            {% for n in news %}
+                <div class="font-weight-bold">   {{ n.getTitle() }} - {{ n.getDate()|date('Y-m-d') }}
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a class="btn btn-primary rounded-0 btn-sm" href="{{ url('news_edit', {'id': n.getId()}) }}">Edytuj</a>
+                        <a class="btn btn-primary rounded-0 btn-sm" href="{{ url('news_remove', {'id': n.getId()}) }}">Usuń</a>
+                    {% endif %}
+                </div>
+                <hr class="mt-1"/>
+                <div class="form-group">
+                    {{ n.description }}
+                </div>
+                <br/>
+            {% endfor %}
+        </div>
+{% endblock %}

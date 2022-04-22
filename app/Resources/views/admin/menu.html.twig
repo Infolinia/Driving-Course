@@ -1,0 +1,45 @@
+<ul class="navbar-nav mx-auto">
+
+    <li class="nav-item active">
+        <a class="nav-link" href="{{ url('course_index') }}">Home <span class="sr-only">(current)</span></a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url('courses') }}">Kursy</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url('course_instructors') }}">Instruktorzy</a>
+    </li>
+
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="dropdown" role="button" data-toggle="dropdown">
+            Profil
+        </a>
+        <div class="dropdown-menu" aria-labelledby="dropdown">
+            <a class="dropdown-item" href="{{ url('profile_index') }}">Moje dane</a>
+            <a class="dropdown-item" href="{{ url('profile_change') }} ">Zmień hasło</a>
+        </div>
+    </li>
+
+    <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="dropdown" role="button" data-toggle="dropdown">
+            Panel Administratora
+        </a>
+        <div class="dropdown-menu" aria-labelledby="dropdown">
+            <a class="dropdown-item" href="{{ url('profile_show') }}">Wyszukaj</a>
+          <a class="dropdown-item" href="{{ url('category_add') }}">Dodaj kategorię</a>
+            <a class="dropdown-item" href="{{ url('news_add') }}">Dodaj ogłoszenie</a>
+            <!--   <a class="dropdown-item" href="">Zmień rolę</a>-->
+            <a class="dropdown-item" href="{{ url('course_create') }}">Utwórz kurs</a>
+            <a class="dropdown-item" href="{{ url('instructor_hour_show') }}">Godziny instruktorów</a>
+            <a class="dropdown-item" href="{{ url('courses_fnished') }}">Zakończone kursy</a>
+            <a class="dropdown-item" href="{{ url('admin_holiday_accept') }}">Urlopy</a>
+            <a class="dropdown-item" href="{{ url('alerts_show') }}">Alerty</a>
+        </div>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url('logout') }}">Wyloguj</a>
+    </li>
+</ul>

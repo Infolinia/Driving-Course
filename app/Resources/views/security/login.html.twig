@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h3>Logowanie</h3>
+    <hr/>
+    {% include('course/alert.html.twig') %}
+    {% if error %}
+        <div class="alert alert-danger" role="alert"> <strong>Błąd!</strong> {{ error.messageKey|trans(error.messageData, 'security') }}</div>
+    {% endif %}
+    <div class="row">
+        <div class="mx-auto col-sm-8 col-md-4 pt-3 mb-4">
+            <div class="card">
+                <div class="card-header text-center text-muted">
+                    Formularz logowania
+                </div>
+                <div class="card-body bg-light">
+                    <form action="{{ path('security_login') }}" method="post">
+                        <div class="form-group">
+                            <input class="form-control form-control-sm text-center rounded-0" placeholder="Login" type="text" id="username" name="_username" value="{{ last_username }}" required="required" />
+                        </div>
+                        <div class="form-group">
+                            <input class="form-control form-control-sm text-center rounded-0" placeholder="Hasło" type="password" id="password" name="_password" required="required" />
+                        </div>
+                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                        <div class="form-group">
+                            <button class="btn btn-sm btn-block btn-primary rounded-0" type="submit" id="_submit" name="_submit">Zaloguj się</button>
+                        </div>
+                        <div class="text-center"><a href="{{ path('resettingPassword_reset') }}">Zapomniałeś hasła?</a></div>
+                        <div class="form-group">
+                            <div class="text-center"><a href="{{ path('registration_register') }}">Nie masz jeszcze konta?</a></div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+

@@ -1,0 +1,140 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h3>Grafik instruktora {{ instructor.details.firstName}} {{ instructor.details.lastName}}
+        {% if show %}
+            <a style="color:white" data-toggle="modal" data-target="#exampleModall{{ instructor.getId() }}" class="btn btn-primary"> Napisz Opinię! </a>
+        {% endif %}
+    </h3>
+    <hr/>
+    </br>
+    {% include('course/alert.html.twig') %}
+    {% if week < 0 %}
+        {% set week = 0 %}
+    {% endif %}
+    <table style="width:100%" border="1">
+        <div class="modal fade" id="exampleModall{{ instructor.getId() }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        Czy napewno chcesz napisać opinię?<br/>
+                        Imię: {{ instructor.details.firstName}}<br/>
+                        Nazwisko: {{ instructor.details.lastName}}<br/>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Nie</button>
+                        <a class="btn btn-primary" href="{{ path('opinion_add', {"id": instructor.id,"category": category.id, "week":week})}}">Tak</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {% for values in data %}
+            <tr>
+                {% for key,value in values %}
+                    {% if loop.parent.loop.index == 1 and loop.index == 1%}
+                        <td width="50" height="50"></td>
+                    {% endif %}
+                    {% if(value == "busy") %}
+                        <td width="50" height="50" style="text-align: center; color:black; background-color: #b21f2d">zajęty
+                        {{ key }} {{ value }}
+                    {% elseif(value == "finished") %}
+                        <td width="50" height="50" style="text-align: center; color:black; background-color: #005cbf"><button type="button" class="btn btn-primary disabled">zakończony</button></td>
+                    {% elseif(value == "empty") %}
+                        <td width="50" height="50" style="text-align: center; color:black; background-color: #CC7832"><button style="color:white" type="button" class="btn btn-warning disabled">wygasło</button></td>
+                    {% else %}
+                        {% if (value.free is defined) %}
+                            {% for k,v in value %}
+                                    <div class="modal fade" id="exampleModal{{ v.date | date('Y-m-d-H-i') }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog" role="document">
+                                            <div class="modal-content">
+                                                <div class="modal-body">
+                                                    Czy napewno chcesz zapisać się na jazdę?<br/>
+                                                    Data: {{ v.date | date('d-m-Y') }} <br/>
+                                                    Godzina:  {{ v.date |date('H:i') }}<br/>
+                                                    Instruktor:  {{ instructor.details.firstName }}<br/>
+                                                    Kategoria: {{ category.getType }}<br/>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Nie</button>
+                                                    <a class="btn btn-primary" href="{{ path('ride_reserve', {"id": instructor.id, 'category': category.id, 'day': v.date | date('d-m-Y'), 'hour': v.date | date('H:i:s'), "week":week}) }}">Tak</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <td width="50" height="50" style="text-align: center; background-color: #1c7430"> <a class="btn btn-success" style="color:white" data-toggle="modal" data-target="#exampleModal{{ v.date | date('Y-m-d-H-i') }}"> Zapisz się! </a></td>
+                            {% endfor %}
+                        {% elseif (value.busy is defined) %}
+                            {% for k,v in value %}
+                                <div class="modal fade" id="exampleModall{{ v.date | date('Y-m-d-H-i') }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-body">
+                                                Czy napewno chcesz anulować jazdę?</br>
+                                                Kolejna rezerwacja możliwa będzie po 24h.</br>
+                                                Data: {{ v.date | date('d-m-Y') }} <br/>
+                                                Godzina:  {{ v.date |date('H:i') }}<br/>
+                                                Instruktor:  {{ instructor.details.firstName }}<br/>
+                                                Kategoria: {{ category.getType }}<br/>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Nie</button>
+                                                <a class="btn btn-primary" href="{{ path('ride_cancel', { "id": instructor.id,'category': category.id, 'day': v.date | date('d-m-Y'), 'hour': v.date | date('H:i'), "week":week})}}">Tak</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <td width="50" height="50" style="text-align: center; background-color: #b21f2d">
+                                     {% if logged.getId() == value.busy.owner %}
+                                         {% if category.getType == value.busy.category.getType %}
+                                            <a style="color:white" data-toggle="modal" data-target="#exampleModall{{ v.date | date('Y-m-d-H-i') }}" class="btn btn-danger"> Odwołaj! </a>
+                                         {% else %}
+                                             <button type="button" class="btn btn-danger disabled">zajęty (kat. {{ value.busy.category.getType() }})</button>
+                                     {% endif %}
+                                     {% else %}
+                                    <button type="button" class="btn btn-danger disabled">zajęty (kat. {{ value.busy.category.getType() }})</button>
+                                 {% endif %}
+                                </td>
+                            {% endfor %}
+                        {% elseif (value.canceled is defined) %}
+                            {% for k,v in value %}
+                                <td width="50" height="50" style="text-align: center; color:black; background-color: #b21f2d">
+                                    <button type="button" class="btn btn-danger disabled">Odwołany</button>
+                                </td>
+                            {% endfor %}
+                        {% elseif (value.holiday is defined) %}
+                            {% for k,v in value %}
+                                <td width="50" height="50" style="text-align: center; color:black; background-color: #d96000">
+                                    <button type="button" style="background-color: #ff8000; color:white;" class="btn disabled">Urlop! </button>
+                                </td>
+                            {% endfor %}
+                        {% else %}
+                            <td width="50" height="50" style="text-align: center;">{{ value }}</td>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+    </br>
+
+    <div class="container">
+        <div class="row">
+            {% if week > 0 %}
+                <div class="col"><a class="btn btn-primary rounded-0 btn-sm" href="{{ path("ride_index", {'id': instructor.id, 'category': category.getId(), 'participant_course': participant_course.getId(), 'week': week-1}) }}">Poprzednia strona</a></div>
+            {% endif %}
+            {% if week < 3 %}
+                <div class="col" align="right"><a class="btn btn-primary rounded-0 btn-sm" href="{{ path("ride_index", {'id': instructor.id, 'category': category.getId(),'participant_course': participant_course.getId(), 'week': week+1}) }}">Następna strona</a></div>
+            {% endif %}
+        </div>
+    </div>
+    </br></br>
+    Dostępne kategorie instruktora:
+    {% for category in instructor.getInstructorCategory %}
+        {{ category.getCategory.getType }}
+    {% else %}
+        brak
+    {% endfor %}
+    </br>
+    </br>
+{% endblock %}

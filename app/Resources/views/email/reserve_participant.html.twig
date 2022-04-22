@@ -1,0 +1,10 @@
+<hr/>
+<h3>Pomyślne utworzenie rezerwacji.</h3>
+Udało się utworzyć rezerwację na: {{ datetime |  date("Y/m/d") }}<br/>
+Godzina: {{ datetime |  date("H:i") }}<br/>
+Kategoria: {{ category }}<br/>
+Instruktor: {{ instructor.getDetails().getFirstName() }} {{ instructor.getDetails().getLastName() }}
+<br/>
+<br/><br/>
+Pozdrawiamy
+<hr/>

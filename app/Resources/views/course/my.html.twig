@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <h3>Moje kursy</h3>
+    <hr/>
+    {% include('course/alert.html.twig') %}
+    </br>
+    {% if courses|length > 0 %}
+        <table class="table table-hover">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Kategoria</th>
+                <th scope="col">Instruktor</th>
+                <th scope="col">Opis</th>
+                <th scope="col">Status</th>
+                <th scope="col">Pozostała ilość godziń</th>
+                <th scope="col">Grafik</th>
+            </tr>
+            <tbody>
+                {% for c in courses if c.getCoursePayment() %}
+                    {% if c.getCoursePayment().getStatus() == 'PAID' %}
+                        <tr>
+                            <td> {{ loop.index }}</td>
+                            <td>{{  c.getCourse().getCategory().getCategory().getType() }}</td>
+                            <td> {{  c.getUserInstructor().getDetails().getFirstName() }} {{  c.getUserInstructor().getDetails().getLastName() }}</td>
+                            <td>{{  c.getCourse().getDescription() }}</td>
+                            {% if c.getCourse().getHours() - (array[c.getCourse().getId()]|join(", ") ) <= 0%}
+                                <td style="color:green; font-weight:bold">Zakończony</td>
+                            {% else %}
+                            <td style="color:green; font-weight:bold">Opłacony</td>
+                            {% endif %}
+                            <td>
+                                {% if c.getCourse().getHours() - (array[c.getCourse().getId()]|join(", ") ) < 0%}
+                                0
+                                {% else %}
+                                {{c.getCourse().getHours() - (array[c.getCourse().getId()]|join(", ") )}}
+                                {% endif %}
+                            </td>
+                            {% if c.getCourse().getHours() - (array[c.getCourse().getId()]|join(", ") ) <= 0%}
+                                <td><a class="btn btn-primary disabled" href=""> Sprawdź </a></td>
+                            {% else %}
+                            <td><a class="btn btn-primary" href=" {{ path('ride_index', { "id": c.getUserInstructor().getId(), 'category': c.getCourse().getCategory().getCategory().getId(),'participant_course':c.getCoursePayment().getCourse().getId()}) }}"> Sprawdź </a></td>
+                            {% endif %}
+                        </tr>
+                    {% else %}
+                        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-body">
+                                        Czy napewno chcesz anulować kurs?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Nie</button>
+                                            <a class="btn btn-primary" href="{{ path('payment_cancel', {'participant_course': c.getCoursePayment().getCourse().getId() })}}">Tak</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <tr>
+                            <td > {{ loop.index }}</td>
+                            <td>{{  c.getCourse().getCategory().getCategory().getType() }}</td>
+                            <td>{{ c.getUserInstructor().getDetails().getFirstName() }} {{  c.getUserInstructor().getDetails().getLastName() }}</td>
+                            <td>{{  c.getCourse().getDescription() }}</td>
+                            <td style="color:red; font-weight:bold;">Nie opłacony  <a class="btn btn-success" href="{{ path('payment_register', { 'course': c.getCourse().getId(), 'participant_course': c.getCoursePayment().getCourse().getId() })}}">Zapłać</a> <a style="color:white" data-toggle="modal" data-target="#exampleModal" class="btn btn-warning" >Anuluj</a></td>
+
+                            </td>
+                            <td>{{ c.getCourse().getHours()}}</td>
+
+                            <td>-------------</td>
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+                    </tbody>
+                </table>
+    {% else %}
+        <div class="col-md-12 alert alert-warning" role="alert">
+            Nie posiadasz żadnych aktywnych kursów.
+        </div>
+    {% endif %}
+{% endblock %}
+

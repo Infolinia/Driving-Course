@@ -1,0 +1,143 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h3>Edycja profilu</h3>
+    <hr>
+    {% include('course/alert.html.twig') %}
+    <div class="row">
+        <div class="mx-auto col-md-6 pt-3  mb-4">
+            <div class="card">
+                <div class="card-header text-center text-muted">
+                    Formularz edycji
+                </div>
+                <div class="card-body bg-light">
+                    {% if photoForm is defined %}
+                        <div class="font-weight-normal text-muted">Awatar</div>
+                        <hr/>
+                        {{ form_start(photoForm) }}
+                            <div class="form-group row">
+                                {% if (detail.getOwner.photo is not null) %}
+                                    <div  class="col-md-4"> <img src="{{ asset('photos/' ~ detail.getOwner.photo.getImage) }}" width="150" height="150"/></div>
+                                {% else %}
+                                    <div  class="col-md-4"> <img src="{{ asset('photos/default.png') }}" width="150" height="150"/></div>
+                                {% endif %}
+                                <div  class="col-md-8">
+                                    {{ form_row(photoForm.image, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Nazwisko'}} ) }}
+                                    <br/>{{ form_row(photoForm.submit, {'label': 'Zatwierdź', 'attr': { 'class' : 'btn btn-block btn-primary rounded-0 btn-sm'}} ) }}
+                                </div>
+                            </div>
+                        {{ form_end(photoForm) }}
+                    {% endif %}
+                    <div class="font-weight-normal text-muted">Dane osobowe</div>
+                    <hr/>
+
+                    {{ form_start(form) }}
+                    {% for error in form.vars.errors.form.getErrors(true) %}
+                        <li>{{ error.message }}</li>
+                    {% endfor %}
+                    <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label">Imię</label>
+                        <div class="col-md-8">
+                            {{ form_row(form.details.first_name, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Imię'}} ) }}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label">Nazwisko</label>
+                        <div class="col-md-8">
+                            {{ form_row(form.details.last_name, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Imię'}} ) }}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label">Ulica</label>
+                        <div class="col-md-8">
+                            {{ form_row(form.details.street, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Ulica'}} ) }}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label">Miasto</label>
+                        <div class="col-md-8">
+                            {{ form_row(form.details.city, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Miasto'}} ) }}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label">Kod pocztowy</label>
+                        <div class="col-md-8">
+                            {{ form_row(form.details.post_code, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Kod pocztowy'}} ) }}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label">Numer telefonu</label>
+                        <div class="col-md-8">
+                            {{ form_row(form.details.phone_number, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Numer telefonu'}} ) }}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label">Email</label>
+                        <div class="col-md-8">
+                            {{ form_row(form.details.email.first, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Email'}} ) }}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label">Powtórz email</label>
+                        <div class="col-md-8">
+                            {{ form_row(form.details.email.second, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Powtórz email'}} ) }}
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="name" class="col-md-4 col-form-label">Rola</label>
+                        <div class="col-md-8">
+                            {{ form_row(form.roles, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Powtórz email'}} ) }}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        {{ form_row(form.submit, {'label': 'Zaktualizuj', 'attr': { 'class' : 'btn btn-block btn-primary rounded-0 btn-sm'}} ) }}
+                    </div>
+                    {{ form_end(form) }}
+
+                    {% if photoForm is defined %}
+                    <div class="font-weight-normal text-muted">Przydział kategorii</div>
+                    <hr/>
+                        <div class="form-group row">
+                            <label for="role" class="col-md-4 col-form-label">Kategorie</label>
+                            <div class="col-md-8">
+                                {% for c in detail.owner.getInstructorCategory %}
+                                    {% if c.category is not null %}
+                                    <form action="{{ url('category_remove', {'category': c.category.getId, 'instructor':  detail.owner.id}) }}">
+                                        <div class="form-group row">
+                                            <div  class="col-md-4"></div>
+                                            <div  class="col-md-4">
+                                                <input class="form-control form-control-sm text-center rounded-0" type="text" value="{{ c.category.type }}" readonly>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <button class="btn btn-primary rounded-0 btn-sm">Usuń</button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                    {% endif %}
+                                {% else %}
+                                    ---
+                                {% endfor %}
+                            </div>
+                        </div>
+
+
+                        {{ form_start(categoryForm) }}
+                        {% if categoryForm.categories is defined %}
+                            <div class="form-group row">
+                                <label for="role" class="col-md-4 col-form-label">Kategoria</label>
+                                <div class="col-md-8">
+                                    {{ form_row(categoryForm.categories, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Malsymalna ilość uczestników'}} ) }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                {{ form_row(categoryForm.submit, {'label': 'Dodaj', 'attr': { 'class' : 'btn btn-block btn-primary rounded-0 btn-sm'}} ) }}
+                            </div>
+                        {% endif %}
+                        {{ form_end(categoryForm) }}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

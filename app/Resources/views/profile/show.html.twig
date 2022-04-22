@@ -1,0 +1,92 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h3>Profil</h3>
+    <hr>
+    {% include('course/alert.html.twig') %}
+    <div class="row">
+        <div class="mx-auto col-md-6 pt-3  mb-4">
+            <div class="card">
+                <div class="card-header text-center text-muted">
+                    Profil użytkownika
+                </div>
+                <div class="card-body bg-light">
+                    {% if is_granted('ROLE_INSTRUCTOR') %}
+                        <div class="font-weight-normal text-muted">Awatar</div>
+                        <hr/>
+
+                        {{ form_start(photo_f) }}
+                        <div class="form-group row">
+                            {% if (user.photo is not null) %}
+                            <div  class="col-md-4"> <img src="{{ asset('photos/' ~ user.photo.getImage) }}" width="150" height="150"/></div>
+                            {% else %}
+                                <div  class="col-md-4"> <img src="{{ asset('photos/default.png') }}" width="150" height="150"/></div>
+                            {% endif %}
+                            <div  class="col-md-8">
+                                {{ form_row(photo_f.image, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Nazwisko'}} ) }}
+                                <br/>{{ form_row(photo_f.submit, {'label': 'Zatwierdź', 'attr': { 'class' : 'btn btn-block btn-primary rounded-0 btn-sm'}} ) }}
+                            </div>
+                        </div>
+                        {{ form_end(photo_f) }}
+                    {% endif %}
+                        <div class="font-weight-normal text-muted">Dane osobowe</div>
+                        <hr/>
+                        {{ form_start(form) }}
+                        <div class="form-group row">
+                            <label for="name" class="col-md-4 col-form-label">Imię</label>
+                            <div class="col-md-8">
+                                {{ form_row(form.details.first_name, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Imię'}} ) }}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="name" class="col-md-4 col-form-label">Nazwisko</label>
+                            <div class="col-md-8">
+                                {{ form_row(form.details.last_name, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Imię'}} ) }}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="name" class="col-md-4 col-form-label">Ulica</label>
+                            <div class="col-md-8">
+                                {{ form_row(form.details.street, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Ulica'}} ) }}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="name" class="col-md-4 col-form-label">Miasto</label>
+                            <div class="col-md-8">
+                                {{ form_row(form.details.city, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Miasto'}} ) }}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="name" class="col-md-4 col-form-label">Kod pocztowy</label>
+                            <div class="col-md-8">
+                                {{ form_row(form.details.post_code, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Kod pocztowy'}} ) }}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="name" class="col-md-4 col-form-label">Numer telefonu</label>
+                            <div class="col-md-8">
+                                {{ form_row(form.details.phone_number, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Numer telefonu'}} ) }}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="name" class="col-md-4 col-form-label">Email</label>
+                            <div class="col-md-8">
+                                {{ form_row(form.details.email.first, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Email'}} ) }}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="name" class="col-md-4 col-form-label">Powtórz email</label>
+                            <div class="col-md-8">
+                                {{ form_row(form.details.email.second, {'attr': { 'class' : 'text-center form-control form-control-sm rounded-0', 'placeholder':'Powtórz email'}} ) }}
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            {{ form_row(form.submit, {'label': 'Zaktualizuj', 'attr': { 'class' : 'btn btn-block btn-primary rounded-0 btn-sm'}} ) }}
+                        </div>
+                        {{ form_end(form) }}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

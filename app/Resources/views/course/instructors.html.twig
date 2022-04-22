@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <h3>Lista instruktorów</h3>
+    <hr>
+    {% include('course/alert.html.twig') %}
+    <div class="row">
+    {% for instructor in instructors %}
+        <div class="mx-auto col-md-6 pt-3  mb-4">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <div class="col-md-12 text-center text-muted">{{ instructor.getDetails.firstName }} {{ instructor.getDetails.lastName }} <a href="{{ url('profile_edit', {'id': instructor.getId}) }}" class="btn btn-primary rounded-0 btn-sm">Edytuj</a></div>
+                            {% else %}
+                                <div class="col-md-12 text-center text-muted">{{ instructor.getDetails.firstName }} {{ instructor.getDetails.lastName }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="card-body bg-light">
+                        <div class="font-weight-normal text-muted">Dane instrutora</div>
+                        <hr/>
+                        <div class="form-group row">
+                            <label for="name" class="col-md-4 col-form-label">Imię</label>
+                            <div class="col-md-8">
+                                {{ instructor.getDetails.firstName }}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="name" class="col-md-4 col-form-label">Nazwisko</label>
+                            <div class="col-md-8">
+                                {{ instructor.getDetails.lastName }}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="name" class="col-md-4 col-form-label">Ocena</label>
+                            <div class="col-md-8">
+                                {% set value = 0 %}
+                                {% for opinion in instructor.getOpinion() %}
+                                    {% set value = value + opinion.getRate()  %}
+                                {% endfor %}
+                                {% if instructor.getOpinion()|length > 0 %}
+                                {{ (value /(instructor.getOpinion()|length)) |number_format(2) }}
+                                {% else %}
+                                    {{ value |number_format(2) }}
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="role" class="col-md-4 col-form-label">Kategorie</label>
+                            <div class="col-md-8">
+                                {% for c in instructor.getInstructorCategory if  c.category.type %}
+                                        {{ loop.index > 1 ? ', ': ''}}{{  c.category.type }}
+                                {% else %}
+                                    ---
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="name" class="col-md-4 col-form-label">Informacje</label>
+                            <div class="col-md-8">
+                               <a href="{{ path("instructor_show", {'id': instructor.id,}) }}" class="btn btn-block btn-primary rounded-0 btn-sm">Sprawdź</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    {% endfor %}
+    </div>
+{% endblock %}

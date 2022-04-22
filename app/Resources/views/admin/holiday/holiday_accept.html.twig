@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h3>Akceptacja urlopów</h3>
+    <hr/>
+    {% include('course/alert.html.twig') %}
+    {% if array |length > 0 %}
+    <div class="row">
+        <div class="mx-auto col-md-8 pt-3  mb-4">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Imię</th>
+                    <th scope="col">Nazwisko</th>
+                    <th scope="col">Dni</th>
+                    <th scope="col">----</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for values in array %}
+                        <tr>
+                            <td scope="row">{{ loop.index }}. </td>
+                            <td>{{ values.name}}</td>
+                            <td>{{ values.surname}}</td>
+                            <td>{{ values.days | join(", ")}}</td>
+                            <td>  <a href="{{ path("admin_holiday_accept_id", {'user': values.id,'start_date':values.days| first,'finish_date':values.days| last}) }}" class="btn btn-block btn-primary rounded-0 btn-sm">Akceptuj</a></td>
+                         </tr>
+
+                {% endfor %}
+                </tbody>
+            </table>
+            </div>
+        </div>
+    {% else %}
+        <div class="col-md-12 alert alert-warning" role="alert">
+          Brak zgłoszeń urlopowych.
+        </div>
+    {% endif %}
+
+    {% if holidaysAccepted |length > 0 %}
+        <div class="row">
+            <div class="mx-auto col-md-8 pt-3  mb-4">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Imię</th>
+                        <th scope="col">Nazwisko</th>
+                        <th scope="col">Data początkowa</th>
+                        <th scope="col">Data końcowa</th>
+                        <th scope="col">Status</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for holidayAccept in holidaysAccepted %}
+                        <tr>
+                            <td scope="row">{{ loop.index }}.</td>
+                            <td>{{ holidayAccept.getOwner().getDetails().getFirstName() }}</td>
+                            <td>{{ holidayAccept.getOwner().getDetails().getLastName() }}</td>
+                            <td>{{ holidayAccept.getStartDate() | date('d.m.Y')}}</td>
+                            <td>{{ holidayAccept.getFinishDate() | date('d.m.Y') }}</td>
+                            <td style="color:green; font-weight:bold">Zatwierdzony </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
